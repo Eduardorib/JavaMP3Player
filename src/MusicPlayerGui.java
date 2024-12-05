@@ -203,6 +203,14 @@ public class MusicPlayerGui extends JFrame {
         pauseButton.setBorderPainted(false);
         pauseButton.setBackground(null);
         pauseButton.setVisible(false);
+        pauseButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                playButtonToggle();
+
+                musicPlayer.pauseSong();
+            }
+        });
         playbackButtons.add(pauseButton);
 
         // Next button
