@@ -1,5 +1,6 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,6 +15,9 @@ public class MusicPlayerGui extends JFrame {
 
     // For accessing file explorer
     private final JFileChooser fileChooser;
+
+    private JLabel songTitle, songArtist;
+    private JPanel playbackButtons;
 
     public MusicPlayerGui() {
         // JFrame constructor: set title header to "Music Player"
@@ -36,7 +40,6 @@ public class MusicPlayerGui extends JFrame {
         // Frame Color
         getContentPane().setBackground(FRAME_COLOR);
 
-
         // Instantiate MusicPlayer class
         musicPlayer = new MusicPlayer();
 
@@ -44,6 +47,8 @@ public class MusicPlayerGui extends JFrame {
         fileChooser = new JFileChooser();
         // Default folder is "assets"
         fileChooser.setCurrentDirectory(new File("src/assets"));
+        // Show only mp3 files
+        fileChooser.setFileFilter(new FileNameExtensionFilter("MP3", "mp3"));
 
         addGuiComponents();
     }
@@ -57,7 +62,7 @@ public class MusicPlayerGui extends JFrame {
         add(songImage);
 
         // Song title
-        JLabel songTitle = new JLabel("Song Title");
+        songTitle = new JLabel("Song Title");
         songTitle.setBounds(0, 285, getWidth() - 10, 30);
         songTitle.setFont(new Font("Dialog", Font.BOLD, 24));
         songTitle.setForeground(TEXT_COLOR);
@@ -65,7 +70,7 @@ public class MusicPlayerGui extends JFrame {
         add(songTitle);
 
         // Song artist
-        JLabel songArtist = new JLabel("Artist");
+        songArtist = new JLabel("Artist");
         songArtist.setBounds(0, 315, getWidth() - 10, 30);
         songArtist.setFont(new Font("Dialog", Font.PLAIN, 24));
         songArtist.setForeground(TEXT_COLOR);
@@ -110,6 +115,10 @@ public class MusicPlayerGui extends JFrame {
                     Song song = new Song(selectedFile.getPath());
 
                     musicPlayer.loadSong(song);
+
+                    updateSongTitleAndArtist(song);
+
+                    pauseButtonToggle();
                 }
             }
         });
@@ -128,8 +137,36 @@ public class MusicPlayerGui extends JFrame {
         JMenuItem loadPlaylist = new JMenuItem("Load Playlist");
         playlistMenu.add(loadPlaylist);
 
-
         add(toolbar);
+    }
+
+    private void updateSongTitleAndArtist(Song song) {
+        songTitle.setText(song.getSongTitle());
+        songArtist.setText(song.getSongArtist());
+    }
+
+    private void pauseButtonToggle() {
+        // Retrieve playback button reference (first index = play button)
+        JButton playButton = (JButton) playbackButtons.getComponent(1);
+        JButton pauseButton = (JButton) playbackButtons.getComponent(2);
+
+        playButton.setVisible(false);
+        playButton.setEnabled(false);
+
+        pauseButton.setVisible(true);
+        pauseButton.setEnabled(true);
+    }
+
+    private void playButtonToggle() {
+        // Retrieve playback button reference (first index = play button)
+        JButton playButton = (JButton) playbackButtons.getComponent(1);
+        JButton pauseButton = (JButton) playbackButtons.getComponent(2);
+
+        playButton.setVisible(true);
+        playButton.setEnabled(true);
+
+        pauseButton.setVisible(false);
+        pauseButton.setEnabled(false);
     }
 
     private ImageIcon loadImage(String path) {
@@ -145,7 +182,7 @@ public class MusicPlayerGui extends JFrame {
     }
 
     private void addPlaybackButtons() {
-        JPanel playbackButtons = new JPanel();
+        playbackButtons = new JPanel();
         playbackButtons.setBounds(0, 435, getWidth() - 10, 80);
         playbackButtons.setBackground(null);
 
