@@ -108,10 +108,12 @@ public class MusicPlayerGui extends JFrame {
         loadSong.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                fileChooser.showOpenDialog(MusicPlayerGui.this);
+                // Int value based on user's choice
+                int result = fileChooser.showOpenDialog(MusicPlayerGui.this);
+
                 File selectedFile = fileChooser.getSelectedFile();
 
-                if(selectedFile != null) {
+                if(result == JFileChooser.APPROVE_OPTION && selectedFile != null) {
                     Song song = new Song(selectedFile.getPath());
 
                     musicPlayer.loadSong(song);
