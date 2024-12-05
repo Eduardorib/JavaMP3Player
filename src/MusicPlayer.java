@@ -13,12 +13,18 @@ public class MusicPlayer extends PlaybackListener {
 
     private boolean isPaused;
 
+    // Value to store current song time when paused
+    private int currentFrame;
+
     public MusicPlayer() {
 
     }
 
     public void loadSong(Song song) {
         currentSong = song;
+        currentFrame = 0;
+        advancedPlayer.close();
+
 
         if(currentSong != null) {
             playCurrentSong();
@@ -36,6 +42,8 @@ public class MusicPlayer extends PlaybackListener {
     }
 
     public void playCurrentSong() {
+        if(currentSong != null) return;
+
         try{
             FileInputStream fileInputStream = new FileInputStream(currentSong.getFilePath());
             BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
@@ -54,7 +62,13 @@ public class MusicPlayer extends PlaybackListener {
             @Override
             public void run() {
                 try{
-                    advancedPlayer.play();
+                    if(isPaused) {
+                        // Resume in currentFrame
+                        advancedPlayer.play(currentFrame, Integer.MAX_VALUE);
+                    } else {
+                        // Play from beginning
+                        advancedPlayer.play();
+                    }
                 }catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -70,5 +84,9 @@ public class MusicPlayer extends PlaybackListener {
     @Override
     public void playbackFinished(PlaybackEvent evt) {
         System.out.println("playback finished");
+
+        if(isPaused) {
+            currentFrame += (int) ((double) evt.getFrame() * currentSong.getFrameRatePerMilliseconds());
+        }
     }
 }

@@ -127,7 +127,6 @@ public class MusicPlayerGui extends JFrame {
         songMenu.add(loadSong);
 
         // Playlist Menu
-
         JMenu playlistMenu = new JMenu("Playlist");
         menuBar.add(playlistMenu);
 
@@ -198,6 +197,14 @@ public class MusicPlayerGui extends JFrame {
         JButton playButton = new JButton(loadImage("src/assets/play.png"));
         playButton.setBorderPainted(false);
         playButton.setBackground(null);
+        playButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                pauseButtonToggle();
+
+                musicPlayer.playCurrentSong();
+            }
+        });
         playbackButtons.add(playButton);
 
         // Pause button
